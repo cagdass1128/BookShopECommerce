@@ -1,4 +1,5 @@
 ﻿using KitapETicaret18Mart.DataAccess.Data;
+using KitapETicaret18Mart.DataAccess.Repository.IRepository;
 using KitapETicaret18Mart.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,16 +7,16 @@ namespace KitapETicaret18Mart.Controllers
 {
     public class CategoryController : Controller
     {
-        private readonly ApplicationDbContext applicationDbContext;
-        public CategoryController(ApplicationDbContext applicationDbContext)
+        private readonly IUnitOfWork unitOfWork;
+        public CategoryController(IUnitOfWork unitOfWork)
         {
-            this.applicationDbContext = applicationDbContext;
+            this.unitOfWork = unitOfWork;
         }
 
 
         public IActionResult Index()
         {
-            List<Category> categoryList = applicationDbContext.Categories.ToList();
+            List<Category> categoryList = unitOfWork.Category.GetAll().ToList();
             return View(categoryList);
         }
 
@@ -26,7 +27,7 @@ namespace KitapETicaret18Mart.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Category category)
+        public IActionResult Create(Category category)
         {
             if (category.Name == category.DisplayOrder.ToString())
             {
@@ -40,8 +41,8 @@ namespace KitapETicaret18Mart.Controllers
 
             if (ModelState.IsValid)
             {
-                await applicationDbContext.Categories.AddAsync(category);
-                await applicationDbContext.SaveChangesAsync();
+				unitOfWork.Category.Add(category);
+				unitOfWork.Save();
                 TempData["success"] = "Kategori Başarıyla Eklendi";
                 return RedirectToAction("Index");
             }
@@ -50,13 +51,13 @@ namespace KitapETicaret18Mart.Controllers
         }
 
 
-        public async Task<IActionResult> Edit(int? categoryId)
+        public IActionResult Edit(int? categoryId)
         {
             if (categoryId == null || categoryId == 0)
             {
                 return NotFound();
             }
-            Category? categoryFromDb = await applicationDbContext.Categories.FindAsync(categoryId);
+            Category? categoryFromDb = unitOfWork.Ca.Get(u => u.Id == categoryId);
 
             if (categoryFromDb == null)
             {
@@ -66,27 +67,27 @@ namespace KitapETicaret18Mart.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(Category editCategory)
+        public IActionResult Edit(Category editCategory)
         {
             if (ModelState.IsValid)
             {
-                applicationDbContext.Categories.Update(editCategory);
-                await applicationDbContext.SaveChangesAsync();
-                TempData["success"] = "Kategori Başarıyla Güncellendi";
+				unitOfWork.Category.Update(editCategory);
+				unitOfWork.Save();
+				TempData["success"] = "Kategori Başarıyla Güncellendi";
                 return RedirectToAction("Index");
             }
             return View();
         }
 
-        public async Task<IActionResult> Delete(int? id)
+        public IActionResult Delete(int? id)
         {
             if (id == null || id == 0)
             {
                 return NotFound();
             }
-            Category? categoryFromDb = await applicationDbContext.Categories.FindAsync(id);
+			Category? categoryFromDb = unitOfWork.Category.Get(u => u.Id == id);
 
-            if (categoryFromDb == null)
+			if (categoryFromDb == null)
             {
                 return NotFound();
             }
@@ -94,17 +95,17 @@ namespace KitapETicaret18Mart.Controllers
         }
 
         [HttpPost, ActionName("Delete")]
-        public async Task<IActionResult> DeletePOST(int? id)
+        public IActionResult DeletePOST(int? id)
         {
-            Category? obj = await applicationDbContext.Categories.FindAsync(id);
+            Category? obj = unitOfWork.Category.Get(u => u.Id == id);
 
-            if (obj == null)
+			if (obj == null)
             {
                 return NotFound();
             }
-            applicationDbContext.Categories.Remove(obj);
-            await applicationDbContext.SaveChangesAsync();
-            TempData["success"] = "Kategori Başarıyla Silindi";
+			unitOfWork.Category.Remove(obj);
+			unitOfWork.Save();
+			TempData["success"] = "Kategori Başarıyla Silindi";
             return RedirectToAction("Index");
 
         }

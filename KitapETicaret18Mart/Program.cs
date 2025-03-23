@@ -1,4 +1,6 @@
 using KitapETicaret18Mart.DataAccess.Data;
+using KitapETicaret18Mart.DataAccess.Repository;
+using KitapETicaret18Mart.DataAccess.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
 
 namespace KitapETicaret18Mart
@@ -13,6 +15,7 @@ namespace KitapETicaret18Mart
 			builder.Services.AddControllersWithViews();
 			builder.Services.AddDbContext<ApplicationDbContext>(options	
 				=> options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+			builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 
 			var app = builder.Build();
