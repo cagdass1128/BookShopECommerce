@@ -19,5 +19,6 @@ namespace KitapETicaret18Mart.DataAccess.Data;
             new Category { Id = 3, Name = "Tarih", DisplayOrder = 3 }
             );
     }
+}   
 
 }
