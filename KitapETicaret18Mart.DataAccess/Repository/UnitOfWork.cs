@@ -12,10 +12,13 @@ namespace KitapETicaret18Mart.DataAccess.Repository
 	{
 		private readonly ApplicationDbContext applicationDbContext;
 		public ICategoryRepository Category { get; private set; }
-		public UnitOfWork(ApplicationDbContext applicationDbContext)
+        public IProductRepository Product { get; private set; }
+
+        public UnitOfWork(ApplicationDbContext applicationDbContext)
 		{
 			this.applicationDbContext = applicationDbContext;
 			Category = new CategoryRepository(applicationDbContext);
+			Product = new ProductRepository(applicationDbContext);
 		}
 		
 
@@ -23,5 +26,7 @@ namespace KitapETicaret18Mart.DataAccess.Repository
 		{
 			applicationDbContext.SaveChanges();
 		}
+
+
 	}
 }

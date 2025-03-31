@@ -7,7 +7,6 @@ namespace KitapETicaret18Mart.Models
 	{
 		[Key]
         public int Id { get; set; }
-
 		[Required]
 		[MaxLength(30, ErrorMessage = "Kategori Adı en fazla 30 karakter olabilir")]
 		[DisplayName("Kategori Adı")]

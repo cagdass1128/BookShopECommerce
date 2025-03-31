@@ -3,8 +3,9 @@ using KitapETicaret18Mart.DataAccess.Repository.IRepository;
 using KitapETicaret18Mart.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace KitapETicaret18Mart.Controllers
+namespace KitapETicaret18Mart.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class CategoryController : Controller
     {
         private readonly IUnitOfWork unitOfWork;
@@ -41,8 +42,8 @@ namespace KitapETicaret18Mart.Controllers
 
             if (ModelState.IsValid)
             {
-				unitOfWork.Category.Add(category);
-				unitOfWork.Save();
+                unitOfWork.Category.Add(category);
+                unitOfWork.Save();
                 TempData["success"] = "Kategori Başarıyla Eklendi";
                 return RedirectToAction("Index");
             }
@@ -57,7 +58,7 @@ namespace KitapETicaret18Mart.Controllers
             {
                 return NotFound();
             }
-            Category? categoryFromDb = unitOfWork.Ca.Get(u => u.Id == categoryId);
+            Category? categoryFromDb = unitOfWork.Category.Get(u => u.Id == categoryId);
 
             if (categoryFromDb == null)
             {
@@ -71,9 +72,9 @@ namespace KitapETicaret18Mart.Controllers
         {
             if (ModelState.IsValid)
             {
-				unitOfWork.Category.Update(editCategory);
-				unitOfWork.Save();
-				TempData["success"] = "Kategori Başarıyla Güncellendi";
+                unitOfWork.Category.Update(editCategory);
+                unitOfWork.Save();
+                TempData["success"] = "Kategori Başarıyla Güncellendi";
                 return RedirectToAction("Index");
             }
             return View();
@@ -85,9 +86,9 @@ namespace KitapETicaret18Mart.Controllers
             {
                 return NotFound();
             }
-			Category? categoryFromDb = unitOfWork.Category.Get(u => u.Id == id);
+            Category? categoryFromDb = unitOfWork.Category.Get(u => u.Id == id);
 
-			if (categoryFromDb == null)
+            if (categoryFromDb == null)
             {
                 return NotFound();
             }
@@ -99,13 +100,13 @@ namespace KitapETicaret18Mart.Controllers
         {
             Category? obj = unitOfWork.Category.Get(u => u.Id == id);
 
-			if (obj == null)
+            if (obj == null)
             {
                 return NotFound();
             }
-			unitOfWork.Category.Remove(obj);
-			unitOfWork.Save();
-			TempData["success"] = "Kategori Başarıyla Silindi";
+            unitOfWork.Category.Remove(obj);
+            unitOfWork.Save();
+            TempData["success"] = "Kategori Başarıyla Silindi";
             return RedirectToAction("Index");
 
         }
