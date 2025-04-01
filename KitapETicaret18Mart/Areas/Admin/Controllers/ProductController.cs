@@ -22,7 +22,7 @@ namespace KitapETicaret18Mart.Areas.Admin.Controllers
 
 		public IActionResult Index()
 		{
-			List<Product> ProductList = unitOfWork.Product.GetAll().ToList();
+			List<Product> ProductList = unitOfWork.Product.GetAll(includeProperties:"Category").ToList();
 			return View(ProductList);
 		}
 
@@ -110,38 +110,38 @@ namespace KitapETicaret18Mart.Areas.Admin.Controllers
 
 		}
 
+		#region API 
+		[HttpGet]
+		public IActionResult GetAll()
+		{
+			List<Product> ProductList = unitOfWork.Product.GetAll(includeProperties: "Category").ToList();
+			return Json(new { data = ProductList });
+		}
+
+		[HttpDelete]
 		public IActionResult Delete(int? id)
 		{
-			if (id == null || id == 0)
+			var productToBeDeleted = unitOfWork.Product.Get(x => x.Id == id);
+			if(productToBeDeleted == null)
 			{
-				return NotFound();
+				return Json(new { success = false, message = "Silinme Hatası Oluştu" });
 			}
-			Product? ProductFromDb = unitOfWork.Product.Get(u => u.Id == id);
 
-			if (ProductFromDb == null)
+			var oldImagePath = Path.Combine(webHostEnvironment.WebRootPath, productToBeDeleted.ImageUrl.TrimStart('\\'));
+
+			if (System.IO.File.Exists(oldImagePath))
 			{
-				return NotFound();
+				System.IO.File.Delete(oldImagePath);
 			}
-			return View(ProductFromDb);
-		}
 
-		[HttpPost, ActionName("Delete")]
-		public IActionResult DeletePOST(int? id)
-		{
-			Product? obj = unitOfWork.Product.Get(u => u.Id == id);
-
-			if (obj == null)
-			{
-				return NotFound();
-			}
-			unitOfWork.Product.Remove(obj);
+			unitOfWork.Product.Remove(productToBeDeleted);
 			unitOfWork.Save();
-			TempData["success"] = "Kategori Başarıyla Silindi";
-			return RedirectToAction("Index");
 
+
+			return Json(new { success=true, message= "Başarıyla Silindi" });
 		}
 
-
+		#endregion
 
 
 

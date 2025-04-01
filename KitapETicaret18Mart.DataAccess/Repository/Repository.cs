@@ -18,6 +18,7 @@ namespace KitapETicaret18Mart.DataAccess.Repository
 			this.applicationDb = applicationDb;
 			this.dbSet = applicationDb.Set<T>();
 			//applicationDb.Categories == dbSet ||| yani --> dbSet.Add()
+			applicationDb.Products.Include(u => u.Category).Include(u => u.CategoryId);
 		}
 
 		public void Add(T entity)
@@ -25,16 +26,30 @@ namespace KitapETicaret18Mart.DataAccess.Repository
 			dbSet.Add(entity);		
 		}
 
-		public T Get(Expression<Func<T, bool>> filter)
+		public T Get(Expression<Func<T, bool>> filter, string? includeProperties = null)
 		{
 			IQueryable<T> query = dbSet;
 			query = query.Where(filter);
+			if (!string.IsNullOrEmpty(includeProperties))
+			{
+				foreach (var includeProp in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+				{
+					query = query.Include(includeProp);
+				}
+			}
 			return query.FirstOrDefault();
 		}
-
-		public IEnumerable<T> GetAll()
+		//Category,CategoryId
+		public IEnumerable<T> GetAll(string? includeProperties = null)
 		{
 			IQueryable<T> query = dbSet;
+			if(!string.IsNullOrEmpty(includeProperties))
+			{
+				foreach (var includeProp in includeProperties.Split(new char[] {','},StringSplitOptions.RemoveEmptyEntries))
+				{
+					query = query.Include(includeProp);
+				}
+			}
 			return query.ToList();
 		}
 

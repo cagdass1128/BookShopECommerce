@@ -1,7 +1,9 @@
 using KitapETicaret18Mart.DataAccess.Data;
 using KitapETicaret18Mart.DataAccess.Repository;
 using KitapETicaret18Mart.DataAccess.Repository.IRepository;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Text;
 
 namespace KitapETicaret18Mart
 {
@@ -16,6 +18,13 @@ namespace KitapETicaret18Mart
 			builder.Services.AddDbContext<ApplicationDbContext>(options	
 				=> options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 			builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+			// JSON çýktýsý Türkçe karakter entegre
+			builder.Services.Configure<JsonOptions>(options =>
+			{
+				options.JsonSerializerOptions.Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping;
+			});
+
 
 
 			var app = builder.Build();
