@@ -23,7 +23,13 @@ namespace KitapETicaret18Mart.Areas.Customer.Controllers
             return View(productList);
         }
 
-        public IActionResult Privacy()
+		public IActionResult Details(int productId)
+		{
+			Product product = unitOfWork.Product.Get(u=> u.Id == productId, includeProperties: "Category");
+			return View(product);
+		}
+
+		public IActionResult Privacy()
         {
             return View();
         }
