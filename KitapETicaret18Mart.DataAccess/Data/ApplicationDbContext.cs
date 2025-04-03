@@ -1,9 +1,10 @@
 ﻿using KitapETicaret18Mart.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace KitapETicaret18Mart.DataAccess.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
@@ -13,10 +14,13 @@ namespace KitapETicaret18Mart.DataAccess.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<Category>().HasData(
                 new Category { Id = 1, Name = "Aksiyon", DisplayOrder = 1 },
                 new Category { Id = 2, Name = "Bilim Kurgu", DisplayOrder = 2 },
-                new Category { Id = 3, Name = "Tarih", DisplayOrder = 3 });
+                new Category { Id = 3, Name = "Tarih", DisplayOrder = 3 }
+            );
 
             modelBuilder.Entity<Product>().HasData(
                 new Product
@@ -44,10 +48,10 @@ namespace KitapETicaret18Mart.DataAccess.Data
                     Price = 30,
                     Price50 = 25,
                     Price100 = 20,
-					CategoryId = 2,
-					ImageUrl = ""
+                    CategoryId = 2,
+                    ImageUrl = ""
 
-				},
+                },
                 new Product
                 {
                     Id = 3,
@@ -59,9 +63,9 @@ namespace KitapETicaret18Mart.DataAccess.Data
                     Price = 50,
                     Price50 = 40,
                     Price100 = 35,
-					CategoryId = 3,
-					ImageUrl = ""
-				},
+                    CategoryId = 3,
+                    ImageUrl = ""
+                },
                 new Product
                 {
                     Id = 4,
@@ -73,9 +77,9 @@ namespace KitapETicaret18Mart.DataAccess.Data
                     Price = 65,
                     Price50 = 60,
                     Price100 = 55,
-					CategoryId = 2,
-					ImageUrl = ""
-				},
+                    CategoryId = 2,
+                    ImageUrl = ""
+                },
                 new Product
                 {
                     Id = 5,
@@ -87,9 +91,9 @@ namespace KitapETicaret18Mart.DataAccess.Data
                     Price = 27,
                     Price50 = 25,
                     Price100 = 20,
-					CategoryId = 1,
-					ImageUrl = ""
-				},
+                    CategoryId = 1,
+                    ImageUrl = ""
+                },
                 new Product
                 {
                     Id = 6,
@@ -101,9 +105,9 @@ namespace KitapETicaret18Mart.DataAccess.Data
                     Price = 23,
                     Price50 = 22,
                     Price100 = 20,
-					CategoryId = 1,
-					ImageUrl = ""
-				}
+                    CategoryId = 1,
+                    ImageUrl = ""
+                }
                 );
 
 
