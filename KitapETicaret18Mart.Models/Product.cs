@@ -49,8 +49,8 @@ namespace KitapETicaret18Mart.Models
 		[ForeignKey("CategoryId")]
 		
 		public Category? Category { get; set; }
-		
-		public string? ImageUrl { get; set; }
+      
+        public string? ImageUrl { get; set; }
 
 	}
 }

@@ -1,11 +1,14 @@
 ﻿using KitapETicaret18Mart.DataAccess.Data;
 using KitapETicaret18Mart.DataAccess.Repository.IRepository;
 using KitapETicaret18Mart.Models;
+using KitapETicaret18Mart.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KitapETicaret18Mart.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = SD.Role_Admin)]
     public class CategoryController : Controller
     {
         private readonly IUnitOfWork unitOfWork;
@@ -14,14 +17,11 @@ namespace KitapETicaret18Mart.Areas.Admin.Controllers
             this.unitOfWork = unitOfWork;
         }
 
-
         public IActionResult Index()
         {
             List<Category> categoryList = unitOfWork.Category.GetAll().ToList();
             return View(categoryList);
         }
-
-
         public IActionResult Create()
         {
             return View();

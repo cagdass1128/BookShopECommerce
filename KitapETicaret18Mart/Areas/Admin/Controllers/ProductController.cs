@@ -2,12 +2,15 @@
 using KitapETicaret18Mart.DataAccess.Repository.IRepository;
 using KitapETicaret18Mart.Models;
 using KitapETicaret18Mart.Models.ViewModels;
+using KitapETicaret18Mart.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace KitapETicaret18Mart.Areas.Admin.Controllers
 {
 	[Area("Admin")]
+	[Authorize(Roles = SD.Role_Admin)]
 	public class ProductController : Controller
 	{
 		private readonly IUnitOfWork unitOfWork;
@@ -50,12 +53,10 @@ namespace KitapETicaret18Mart.Areas.Admin.Controllers
 				productVM.Product = unitOfWork.Product.Get(u => u.Id == id);
 				return View(productVM);
 			}
-
-
 		}
 
 		[HttpPost]
-		public IActionResult UpSert(ProductVM productVM, IFormFile file)
+		public IActionResult UpSert(ProductVM productVM, IFormFile? file)
 		{
 
 			if (ModelState.IsValid)
@@ -76,7 +77,6 @@ namespace KitapETicaret18Mart.Areas.Admin.Controllers
 							System.IO.File.Delete(oldImagePath);
 						}
 					}
-
 
 					using ( var fileStream = new FileStream(Path.Combine(productPath, fileName),FileMode.Create))
 					{
@@ -107,7 +107,6 @@ namespace KitapETicaret18Mart.Areas.Admin.Controllers
 				});
 				return View(productVM);
 			}
-
 		}
 
 		#region API 
