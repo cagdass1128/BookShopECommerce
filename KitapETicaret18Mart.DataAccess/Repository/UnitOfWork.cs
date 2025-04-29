@@ -14,6 +14,10 @@ namespace KitapETicaret18Mart.DataAccess.Repository
 		public ICategoryRepository Category { get; private set; }
 		public IProductRepository Product { get; private set; }
 		public ICompanyRepository Company { get; private set; }
+		public IShoppingCartRepository ShoppingCart { get; private set; }
+		public IApplicationUserRepository ApplicationUser { get; private set; }
+		public IOrderHeaderRepository OrderHeader { get; private set; }
+		public IOrderDetailRepository OrderDetail { get; private set; }
 
 		public UnitOfWork(ApplicationDbContext applicationDbContext)
 		{
@@ -21,6 +25,10 @@ namespace KitapETicaret18Mart.DataAccess.Repository
 			Category = new CategoryRepository(applicationDbContext);
 			Product = new ProductRepository(applicationDbContext);
 			Company = new CompanyRepository(applicationDbContext);
+			ShoppingCart = new ShoppingCartRepository(applicationDbContext);
+			ApplicationUser = new ApplicationUserRepository(applicationDbContext);
+			OrderDetail = new OrderDetailRepository(applicationDbContext);
+			OrderHeader = new OrderHeaderRepository(applicationDbContext);
 		}
 
 

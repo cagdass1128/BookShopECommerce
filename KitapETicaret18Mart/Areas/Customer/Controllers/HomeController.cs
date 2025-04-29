@@ -1,7 +1,9 @@
 using KitapETicaret18Mart.DataAccess.Repository.IRepository;
 using KitapETicaret18Mart.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Security.Claims;
 
 namespace KitapETicaret18Mart.Areas.Customer.Controllers
 {
@@ -25,11 +27,48 @@ namespace KitapETicaret18Mart.Areas.Customer.Controllers
 
 		public IActionResult Details(int productId)
 		{
-			Product product = unitOfWork.Product.Get(u=> u.Id == productId, includeProperties: "Category");
-			return View(product);
+            ShoppingCart cart = new()
+            {
+                Product = unitOfWork.Product.Get(u => u.Id == productId, includeProperties: "Category"),
+                Count = 1,
+                ProductId = productId
+            };	
+			return View(cart);
 		}
 
-		public IActionResult Privacy()
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult Details(ShoppingCart shoppingCart)
+        {
+            //ClaimsIdentity yardýmcý methodtur. Identity package'tan gelir.User ýd verir.
+            var claimsIdentity = (ClaimsIdentity)User.Identity;            
+            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            shoppingCart.ApplicationUserId = userId;
+
+            ShoppingCart cartFromDb = unitOfWork.ShoppingCart.Get(x => x.ApplicationUserId == userId && x.ProductId==shoppingCart.ProductId);
+
+            if(cartFromDb != null)
+            {
+                //shopping cart exists
+                cartFromDb.Count += shoppingCart.Count;
+                unitOfWork.ShoppingCart.Update(cartFromDb);
+            }
+            else
+            {
+                //add cart record
+                unitOfWork.ShoppingCart.Add(shoppingCart);
+
+            }
+            TempData["success"] = "Sepet Baþarýyla Güncellendi";
+            unitOfWork.Save();
+
+            return RedirectToAction(nameof(Index));
+        }
+
+
+        public IActionResult Privacy()
         {
             return View();
         }
