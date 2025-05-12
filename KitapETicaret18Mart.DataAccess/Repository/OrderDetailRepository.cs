@@ -10,18 +10,18 @@ using System.Threading.Tasks;
 
 namespace KitapETicaret18Mart.DataAccess.Repository
 {
-	public class OrderHeaderRepository : Repository<OrderHeader>, IOrderHeaderRepository
+	public class OrderDetailRepository : Repository<OrderDetail>, IOrderDetailRepository
 	{
 		private readonly ApplicationDbContext applicationDbContext;
-		public OrderHeaderRepository(ApplicationDbContext applicationDbContext) : base(applicationDbContext) 
+		public OrderDetailRepository(ApplicationDbContext applicationDbContext) : base(applicationDbContext) 
 		{        
 			this.applicationDbContext = applicationDbContext;
 		}
 		     
 
-		public void Update(OrderHeader obj)
+		public void Update(OrderDetail obj)
 		{
-			applicationDbContext.OrderHeaders.Update(obj);
+			applicationDbContext.OrderDetails.Update(obj);
 		}
 	}
 }

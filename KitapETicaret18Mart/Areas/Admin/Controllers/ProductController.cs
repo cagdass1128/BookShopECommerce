@@ -139,7 +139,6 @@ namespace KitapETicaret18Mart.Areas.Admin.Controllers
 
 			return Json(new { success=true, message= "Başarıyla Silindi" });
 		}
-
 		#endregion
 
 
