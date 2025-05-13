@@ -1,6 +1,8 @@
 using KitapETicaret18Mart.DataAccess.Repository.IRepository;
 using KitapETicaret18Mart.Models;
+using KitapETicaret18Mart.Utility;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Security.Claims;
@@ -21,7 +23,7 @@ namespace KitapETicaret18Mart.Areas.Customer.Controllers
 
         public IActionResult Index()
         {
-            IEnumerable<Product> productList = unitOfWork.Product.GetAll(includeProperties: "Category");
+			IEnumerable<Product> productList = unitOfWork.Product.GetAll(includeProperties: "Category");
             return View(productList);
         }
 
@@ -52,17 +54,19 @@ namespace KitapETicaret18Mart.Areas.Customer.Controllers
             if(cartFromDb != null)
             {
                 //shopping cart exists
-                cartFromDb.Count += shoppingCart.Count;
+                cartFromDb.Count += shoppingCart.Count;                
                 unitOfWork.ShoppingCart.Update(cartFromDb);
-            }
+				unitOfWork.Save();
+			}
             else
             {
                 //add cart record
                 unitOfWork.ShoppingCart.Add(shoppingCart);
-
+				unitOfWork.Save();
+				HttpContext.Session.SetInt32(SD.SessionCart, unitOfWork.ShoppingCart.GetAll(x => x.ApplicationUserId == userId).Count());
             }
             TempData["success"] = "Sepet Baþarýyla Güncellendi";
-            unitOfWork.Save();
+            
 
             return RedirectToAction(nameof(Index));
         }
